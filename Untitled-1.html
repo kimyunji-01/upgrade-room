@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>업그레이드 객실 추천 시스템</title>
+  <style>
+    body { font-family: 'Arial', sans-serif; padding: 20px; }
+    .room {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .primary { background-color: #e0f7fa; }
+    .secondary { background-color: #f1f8e9; }
+    .room h4 { margin: 0 0 5px; }
+    #totalPrice {
+      padding: 15px;
+      border: 2px dashed #999;
+      border-radius: 10px;
+      background-color: #fdfdfd;
+      display: none;
+      font-size: 16px;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h2>인원수를 선택하세요:</h2>
+  <select id="guestCount">
+    <option value="1">1명</option>
+    <option value="2">2명</option>
+    <option value="3">3명</option>
+    <option value="4">4명</option>
+  </select>
+
+  <h3>추천 업그레이드 객실:</h3>
+  <div id="upgradeRooms"></div>
+
+  <div id="totalPrice"></div>
+
+  <script>
+    const allRooms = [
+      { name: "1등 2인 양실", maxPeople: 2, oneWay: 30000 },
+      { name: "1등 3인 화실", maxPeople: 3, oneWay: 30000 },
+      { name: "1등 4인 양실", maxPeople: 4, oneWay: 30000 },
+      { name: "1등 4인 화실", maxPeople: 4, oneWay: 30000 },
+      { name: "디럭스 트윈", maxPeople: 2, oneWay: 80000 },
+      { name: "1등 2인 양실 2개", maxPeople: 4, oneWay: 60000 } // 30,000 x 2
+    ];
+
+    const upgradePriority = {
+      1: {
+        primary: ["1등 2인 양실", "디럭스 트윈"],
+        secondary: []
+      },
+      2: {
+        primary: ["1등 2인 양실", "디럭스 트윈"],
+        secondary: ["1등 3인 화실"]
+      },
+      3: {
+        primary: ["1등 3인 화실"],
+        secondary: ["1등 4인 양실", "1등 4인 화실"]
+      },
+      4: {
+        primary: ["1등 2인 양실 2개", "1등 4인 양실", "1등 4인 화실"],
+        secondary: []
+      }
+    };
+
+    const guestCountSelect = document.getElementById("guestCount");
+    const upgradeRoomsDiv = document.getElementById("upgradeRooms");
+    const totalPriceEl = document.getElementById("totalPrice");
+
+    function calculateSpecialRate(roomName, peopleCount) {
+      if (roomName === "1등 2인 양실" && peopleCount === 1) {
+        return 50000;
+      } else if (roomName === "1등 3인 화실" && peopleCount === 2) {
+        return 30000 * 2;
+      } else if (
+        (roomName === "1등 4인 양실" || roomName === "1등 4인 화실") &&
+        peopleCount === 3
+      ) {
+        return 30000 * 3;
+      } else if (roomName === "디럭스 트윈" && peopleCount === 1) {
+        return 120000;
+      } else {
+        const room = allRooms.find(r => r.name === roomName);
+        return room ? room.oneWay * peopleCount : 0;
+      }
+    }
+
+    function renderUpgradeRooms() {
+      const count = parseInt(guestCountSelect.value);
+      const priority = upgradePriority[count];
+
+      let html = "";
+
+      const renderRoom = (roomName, type) => {
+        const roomData = allRooms.find(r => r.name === roomName);
+        if (!roomData) return "";
+
+        // 예외 요금 텍스트도 반영
+        const displayPricePerPerson = (() => {
+          if (roomName === "디럭스 트윈" && count === 1) return 120000;
+          if (roomName === "1등 2인 양실" && count === 1) return 50000;
+          if (roomName === "1등 3인 화실" && count === 2) return 30000;
+          if (
+            (roomName === "1등 4인 양실" || roomName === "1등 4인 화실") &&
+            count === 3
+          ) return 30000;
+          return roomData.oneWay;
+        })();
+
+        return `
+          <div class="room ${type === 'primary' ? 'primary' : 'secondary'}">
+            <input type="radio" name="roomSelect" value="${roomData.name}" />
+            <label><strong>${roomData.name}</strong></label>
+            <p>최대 인원: ${roomData.maxPeople}명</p>
+            <p>요금: 편도 1인당 ${displayPricePerPerson.toLocaleString()}원</p>
+            <p>${type === 'primary' ? '✅ 1순위 추천 업그레이드' : '🔁 후순위 요청 가능'}</p>
+          </div>
+        `;
+      };
+
+      priority.primary.forEach(room => {
+        html += renderRoom(room, 'primary');
+      });
+
+      priority.secondary.forEach(room => {
+        html += renderRoom(room, 'secondary');
+      });
+
+      upgradeRoomsDiv.innerHTML = html || '<p>추천 객실이 없습니다.</p>';
+      totalPriceEl.style.display = 'none';
+
+      document.querySelectorAll('input[name="roomSelect"]').forEach(input => {
+        input.addEventListener("change", () => {
+          const roomName = input.value;
+          const oneWayTotal = calculateSpecialRate(roomName, count);
+          const roundTripTotal = oneWayTotal * 2;
+
+          totalPriceEl.style.display = 'block';
+          totalPriceEl.innerHTML = `
+            <span style="font-weight:bold; font-size: 18px;">총 예상 요금</span><br/>
+            <span style="color:#2c3e50;">▪ 편도:</span> ${oneWayTotal.toLocaleString()}원<br/>
+            <span style="color:#2c3e50;">▪ 왕복:</span> ${roundTripTotal.toLocaleString()}원
+          `;
+        });
+      });
+    }
+
+    guestCountSelect.addEventListener("change", renderUpgradeRooms);
+    renderUpgradeRooms();
+  </script>
+</body>
+</html>
