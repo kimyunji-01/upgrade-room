@@ -16,7 +16,6 @@
       position: relative;
       max-width: 800px;
       margin: 40px auto;
-      padding: 20px;
     }
     .container img.bg {
       width: 100%;
@@ -24,31 +23,34 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .overlay {
+    .text-block {
       position: absolute;
-      width: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       text-align: center;
       color: #222;
-    }
-    .overlay.date-label {
-      top: 120px;
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .overlay.date-value {
-      top: 165px;
-      font-size: 56px;
-      font-weight: 700;
-      color: #007bff;
-    }
-    .overlay.details {
-      top: 250px;
-      font-size: 18px;
-      line-height: 1.8;
+      width: 100%;
       padding: 0 30px;
     }
-    .overlay.details strong {
-      color: #1c316e;
+    .text-block .date-label {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .text-block .date-value {
+      font-size: 54px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #007bff;
+    }
+    .text-block .details {
+      font-size: 18px;
+      line-height: 1.8;
+    }
+    .text-block .details strong {
+      font-weight: 700;
+      color: #1f3762;
     }
     .actions {
       text-align: center;
@@ -79,13 +81,15 @@
 <body>
   <div class="container">
     <img src="luggage-logo.png" alt="짐보관 디자인" class="bg">
-    <div class="overlay date-label">DATE</div>
-    <div class="overlay date-value" id="auto-date">--.--.-- (--)</div>
-    <div class="overlay details">
-      このお客様は<strong>TNTBUSAN</strong>の利用자で、 荷物預かりが 가능합니다。<br><br>
-      <strong>짐은 1인 1개 / 도착 1일차 하루만 /<br>
-      하선 후 1시간 이내 방문</strong> 시에만 이용 가능<br>
-      (기타 주의사항은 블로그 링크 참고)
+    <div class="text-block">
+      <div class="date-label">DATE</div>
+      <div class="date-value" id="auto-date">--.--.-- (--)</div>
+      <div class="details">
+        このお客様は <strong>TNTBUSAN</strong> の利用자で、 荷物預かりが 가능합니다。<br><br>
+        <strong>짐은 1인 1개 / 도착 1일차 하루만 /<br>
+        하선후 1시간 이내 방문</strong> 시에만 이용 가능<br>
+        (기타 주의사항은 블로그 링크 참고)
+      </div>
     </div>
   </div>
 
