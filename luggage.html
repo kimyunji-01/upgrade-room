@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>무료 짐보관 서비스 이용 바우처</title>
+  <title>짐보관 자동 날짜 생성</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/variable/pretendardvariable.css" rel="stylesheet">
   <style>
@@ -30,8 +30,9 @@
       left: 50%;
       transform: translate(-50%, -50%);
       color: #222;
-      width: 100%;
-      padding: 0 5vw;
+      width: 90%;
+      max-width: 700px;
+      padding: 5vw;
       box-sizing: border-box;
       text-align: center;
     }
@@ -50,6 +51,7 @@
       font-size: 4.2vw;
       font-weight: 500;
       line-height: 1.9;
+      word-break: keep-all;
     }
     .text-block .details strong {
       font-weight: 800;
@@ -84,7 +86,7 @@
     @media (min-width: 768px) {
       .text-block {
         text-align: center;
-        padding: 0 30px;
+        padding: 30px;
       }
       .text-block .date-label { font-size: 36px; }
       .text-block .date-value { font-size: 54px; }
@@ -99,7 +101,7 @@
       <div class="date-label">DATE</div>
       <div class="date-value" id="auto-date">--.--.-- (--)</div>
       <div class="details">
-        こちらのお客様は <strong>TNTBUSAN</strong> の無料手荷物預かりサービスをご利用いただけます。<br><br>
+        こちらのお客様は<br><strong>TNTBUSAN</strong> の無料手荷物預かりサービスをご利用いただけます。<br><br>
         <strong>짐은 1인 1개 / 도착 1일차 하루만 /<br>
         하선후 1시간 이내 방문</strong> 시에만 이용 가능<br>
         (기타 주의사항은 블로그 링크 참고)
@@ -114,7 +116,7 @@
   </div>
 
   <footer>
-    &copy; 2025 TNTBUSAN 무료 짐보관 서비스
+    &copy; 2025 TNTBUSAN 짐보관 서비스
   </footer>
 
   <script>
