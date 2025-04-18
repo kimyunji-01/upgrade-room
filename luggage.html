@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: 'Noto Sans KR', sans-serif;
-      background: linear-gradient(135deg, #f9f9f9, #e6f0ff);
+      background-color: #5BB2FF;
       margin: 0;
       padding: 0;
     }
@@ -26,33 +26,32 @@
     }
     .overlay {
       position: absolute;
-      color: #222;
+      left: 50%;
+      transform: translateX(-50%);
       text-align: center;
+      color: #222;
       text-shadow: 0 1px 2px rgba(255,255,255,0.7);
     }
     .overlay.date-label {
-      top: 180px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 170px;
       font-size: 16px;
       letter-spacing: 2px;
       font-weight: bold;
     }
     .overlay.date-value {
       top: 210px;
-      left: 50%;
-      transform: translateX(-50%);
       font-size: 48px;
       font-weight: bold;
       color: #007bff;
     }
     .overlay.details {
-      top: 270px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 280px;
       width: 90%;
       font-size: 18px;
-      line-height: 1.5;
+      line-height: 1.6;
+      background-color: rgba(255,255,255,0.8);
+      padding: 10px 20px;
+      border-radius: 10px;
     }
     .actions {
       text-align: center;
@@ -75,7 +74,7 @@
     footer {
       text-align: center;
       font-size: 14px;
-      color: #888;
+      color: #fff;
       margin-top: 60px;
     }
   </style>
