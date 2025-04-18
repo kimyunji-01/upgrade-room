@@ -3,67 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <title>짐보관 자동 날짜 생성</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* 1) 컨테이너 크기와 정렬 */
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, #f9f9f9, #e6f0ff);
+      margin: 0;
+      padding: 0;
+    }
     .container {
       position: relative;
-      width: 800px;      /* 이미지 실제 크기에 맞춰 조정 */
-      margin: 40px auto; /* 중앙 정렬 */
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
     }
-    /* 2) 백그라운드 이미지 */
     .container img.bg {
       width: 100%;
       display: block;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    /* 3) 텍스트 오버레이 기본 설정 */
     .overlay {
       position: absolute;
-      color: #333;
-      font-family: 'Arial', sans-serif;
+      color: #222;
       text-align: center;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.7);
     }
-    /* 4) DATE 레이블 위치 */
     .overlay.date-label {
-      top: 180px;      /* 이미지에서 DATE가 들어갈 위치 */
+      top: 180px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 16px;
       letter-spacing: 2px;
       font-weight: bold;
     }
-    /* 5) 실제 날짜 텍스트 위치 */
     .overlay.date-value {
-      top: 200px;      /* 이미지에서 날짜 숫자가 들어갈 위치 */
+      top: 210px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 48px;
       font-weight: bold;
+      color: #007bff;
     }
-    /* 6) 설명 텍스트 위치 */
     .overlay.details {
-      top: 260px;      /* 설명 위치 */
+      top: 270px;
       left: 50%;
       transform: translateX(-50%);
       width: 90%;
       font-size: 18px;
-      line-height: 1.4;
+      line-height: 1.5;
+    }
+    .actions {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    footer {
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      margin-top: 60px;
     }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <!-- 네가 올린 디자인 이미지 -->
-   <img src="luggage-logo.png" alt="짐보관 디자인" class="bg">
-    <!-- 오버레이 텍스트 -->
+    <img src="luggage-logo.png" alt="짐보관 디자인" class="bg">
     <div class="overlay date-label">DATE</div>
     <div class="overlay date-value" id="auto-date">--.--.-- (--)</div>
-   <div class="overlay details">
+    <div class="overlay details">
       このお客様は<strong>TNTBUSAN</strong>の利用者で、 荷物預かりが可能です。<br>
       짐은 1인 1개 / 도착 1일차 하루만 / 하선 후 1시간 이내 이용 가능<br>
       (기타 주의사항은 블로그 링크 참고)
     </div>
   </div>
+
+  <div class="actions">
+    <button class="btn" onclick="copyDate()">날짜 복사하기</button>
+    <button class="btn" onclick="downloadPDF()">PDF로 저장</button>
+    <button class="btn" onclick="location.href='https://example.com/contact'">예약 문의하기</button>
+  </div>
+
+  <footer>
+    &copy; 2025 TNTBUSAN 짐보관 서비스
+  </footer>
 
   <script>
     function updateDate() {
@@ -77,6 +114,17 @@
 
       document.getElementById('auto-date').textContent = 
         `${yy}.${mm}.${dd} (${wd})`;
+    }
+
+    function copyDate() {
+      const dateText = document.getElementById('auto-date').textContent;
+      navigator.clipboard.writeText(dateText).then(() => {
+        alert('날짜가 복사되었습니다!');
+      });
+    }
+
+    function downloadPDF() {
+      window.print();
     }
 
     updateDate();
