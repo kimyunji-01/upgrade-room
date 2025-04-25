@@ -17,6 +17,8 @@
     }
 
     .room {
+      display: flex;
+      align-items: flex-start;
       border: 1px solid #ccc;
       border-radius: 10px;
       padding: 10px;
@@ -26,13 +28,12 @@
     .primary { background-color: #e0f7fa; }
     .secondary { background-color: #f1f8e9; }
 
-    /* 이미지 사이즈 통일: 고정 높이, 비율 유지하며 잘라내기 */
+    /* 이미지 사이즈 통일 및 축소: 비율 유지 */
     .room img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
+      max-width: 200px;
+      height: auto;
       border-radius: 8px;
-      margin-bottom: 8px;
+      margin-right: 12px;
     }
 
     #totalPrice {
@@ -136,11 +137,13 @@
         return `
           <div class="room ${type}">
             <img src="${imageMap[roomName]}" alt="${roomName}" />
-            <input type="radio" name="roomSelect" value="${roomData.name}" />
-            <label><strong>${roomData.name}</strong></label>
-            <p>최대 인원: ${roomData.maxPeople}명</p>
-            <p>요금: 편도 1인당 ${displayPricePerPerson.toLocaleString()}원</p>
-            <p>${type === 'primary' ? '✅ 1순위 추천 업그레이드' : '🔁 후순위 요청 가능'}</p>
+            <div>
+              <input type="radio" name="roomSelect" value="${roomData.name}" />
+              <label><strong>${roomData.name}</strong></label>
+              <p>최대 인원: ${roomData.maxPeople}명</p>
+              <p>요금: 편도 1인당 ${displayPricePerPerson.toLocaleString()}원</p>
+              <p>${type === 'primary' ? '✅ 1순위 추천 업그레이드' : '🔁 후순위 요청 가능'}</p>
+            />
           </div>
         `;
       };
