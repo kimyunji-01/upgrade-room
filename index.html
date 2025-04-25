@@ -14,6 +14,11 @@
     .primary { background-color: #e0f7fa; }
     .secondary { background-color: #f1f8e9; }
     .room h4 { margin: 0 0 5px; }
+    .room img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
     #totalPrice {
       padding: 15px;
       border: 2px dashed #999;
@@ -23,26 +28,24 @@
       font-size: 16px;
       margin-top: 20px;
       line-height: 1.6;
-      .pretty-button {
-    background-color: #4F9FFF;
-    color: white;
-    font-size: 18px;
-    padding: 12px 28px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .pretty-button:hover {
-    background-color: #2e7be4;
-    transform: translateY(-2px);
-  }
-
-  .pretty-button:active {
-    transform: scale(0.98);
-  }
+    }
+    .pretty-button {
+      background-color: #4F9FFF;
+      color: white;
+      font-size: 18px;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .pretty-button:hover {
+      background-color: #2e7be4;
+      transform: translateY(-2px);
+    }
+    .pretty-button:active {
+      transform: scale(0.98);
     }
   </style>
 </head>
@@ -67,7 +70,7 @@
       { name: "1등 4인 양실", maxPeople: 4, oneWay: 30000 },
       { name: "1등 4인 화실", maxPeople: 4, oneWay: 30000 },
       { name: "디럭스 트윈", maxPeople: 2, oneWay: 80000 },
-      { name: "1등 2인 양실 2개", maxPeople: 4, oneWay: 60000 } // 30,000 x 2
+      { name: "1등 2인 양실 2개", maxPeople: 4, oneWay: 60000 }
     ];
 
     const upgradePriority = {
@@ -87,6 +90,16 @@
         primary: ["1등 2인 양실 2개", "1등 4인 양실", "1등 4인 화실"],
         secondary: []
       }
+    };
+
+    // 이미지 맵: 방 이름에 따라 표시할 이미지 URL
+    const imageMap = {
+      "1등 2인 양실": "https://source.unsplash.com/400x250/?room",
+      "1등 3인 화실": "https://source.unsplash.com/400x250/?japan-room",
+      "1등 4인 양실": "https://source.unsplash.com/400x250/?twin-room",
+      "1등 4인 화실": "https://source.unsplash.com/400x250/?traditional-room",
+      "디럭스 트윈": "https://source.unsplash.com/400x250/?hotel-room",
+      "1등 2인 양실 2개": "https://source.unsplash.com/400x250/?double-room"
     };
 
     const guestCountSelect = document.getElementById("guestCount");
@@ -112,7 +125,7 @@
     }
 
     function renderUpgradeRooms() {
-      const count = parseInt(guestCountSelect.value);
+      const count = parseInt(guestCountSelect.value, 10);
       const priority = upgradePriority[count];
 
       let html = "";
@@ -121,7 +134,7 @@
         const roomData = allRooms.find(r => r.name === roomName);
         if (!roomData) return "";
 
-        // 예외 요금 텍스트도 반영
+        // 요금 표시 로직
         const displayPricePerPerson = (() => {
           if (roomName === "디럭스 트윈" && count === 1) return 120000;
           if (roomName === "1등 2인 양실" && count === 1) return 50000;
@@ -134,7 +147,8 @@
         })();
 
         return `
-          <div class="room ${type === 'primary' ? 'primary' : 'secondary'}">
+          <div class="room ${type}">
+            <img src="${imageMap[roomName]}" alt="${roomName}" />
             <input type="radio" name="roomSelect" value="${roomData.name}" />
             <label><strong>${roomData.name}</strong></label>
             <p>최대 인원: ${roomData.maxPeople}명</p>
@@ -147,7 +161,6 @@
       priority.primary.forEach(room => {
         html += renderRoom(room, 'primary');
       });
-
       priority.secondary.forEach(room => {
         html += renderRoom(room, 'secondary');
       });
@@ -174,6 +187,7 @@
     guestCountSelect.addEventListener("change", renderUpgradeRooms);
     renderUpgradeRooms();
   </script>
+
   <div style="text-align:center; margin-top: 30px;">
     <button class="pretty-button" onclick="alert('예약 페이지는 곧 오픈될 예정이에요!')">
       예약하기 💌
