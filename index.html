@@ -4,16 +4,30 @@
   <meta charset="UTF-8">
   <title>업그레이드 객실 추천 시스템</title>
   <style>
-    body { font-family: 'Arial', sans-serif; padding: 20px; }
+    /* 배경 이미지 및 반응형 설정 */
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      /* 여기를 실제 이미지 URL로 교체! */
+      background-image: url('https://raw.githubusercontent.com/너의아이디/레포이름/main/images/부관봄2.png');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      /* 컨텐츠가 배경 위에서 잘 보이도록 필요시 반투명 배경 추가
+         background-color: rgba(255,255,255,0.8);
+      */
+      min-height: 100vh;
+    }
+
     .room {
       border: 1px solid #ccc;
       border-radius: 10px;
       padding: 10px;
       margin-bottom: 10px;
+      background-color: rgba(255,255,255,0.9); /* 카드마다 약간 배경을 넣어 가독성 확보 */
     }
     .primary { background-color: #e0f7fa; }
     .secondary { background-color: #f1f8e9; }
-    .room h4 { margin: 0 0 5px; }
     .room img {
       max-width: 100%;
       border-radius: 8px;
@@ -60,7 +74,6 @@
 
   <h3>추천 업그레이드 객실:</h3>
   <div id="upgradeRooms"></div>
-
   <div id="totalPrice"></div>
 
   <script>
@@ -74,32 +87,19 @@
     ];
 
     const upgradePriority = {
-      1: {
-        primary: ["1등 2인 양실", "디럭스 트윈"],
-        secondary: []
-      },
-      2: {
-        primary: ["1등 2인 양실", "디럭스 트윈"],
-        secondary: ["1등 3인 화실"]
-      },
-      3: {
-        primary: ["1등 3인 화실"],
-        secondary: ["1등 4인 양실", "1등 4인 화실"]
-      },
-      4: {
-        primary: ["1등 2인 양실 2개", "1등 4인 양실", "1등 4인 화실"],
-        secondary: []
-      }
+      1: { primary: ["1등 2인 양실", "디럭스 트윈"], secondary: [] },
+      2: { primary: ["1등 2인 양실", "디럭스 트윈"], secondary: ["1등 3인 화실"] },
+      3: { primary: ["1등 3인 화실"], secondary: ["1등 4인 양실", "1등 4인 화실"] },
+      4: { primary: ["1등 2인 양실 2개", "1등 4인 양실", "1등 4인 화실"], secondary: [] }
     };
 
-    // 이미지 맵: 방 이름에 따라 표시할 이미지 URL
     const imageMap = {
-      "1등 2인 양실": "https://source.unsplash.com/400x250/?room",
-      "1등 3인 화실": "https://source.unsplash.com/400x250/?japan-room",
-      "1등 4인 양실": "https://source.unsplash.com/400x250/?twin-room",
-      "1등 4인 화실": "https://source.unsplash.com/400x250/?traditional-room",
-      "디럭스 트윈": "https://source.unsplash.com/400x250/?hotel-room",
-      "1등 2인 양실 2개": "https://source.unsplash.com/400x250/?double-room"
+      "1등 2인 양실": "https://raw.githubusercontent.com/너의아이디/레포이름/main/images/room1.jpg",
+      "1등 3인 화실": "https://raw.githubusercontent.com/너의아이디/레포이름/main/images/room2.jpg",
+      "1등 4인 양실": "https://raw.githubusercontent.com/너의아이디/레포이름/main/images/room3.jpg",
+      "1등 4인 화실": "https://raw.githubusercontent.com/너의아이디/레포이름/main/images/room4.jpg",
+      "디럭스 트윈": "https://raw.githubusercontent.com/너의아이디/레포이름/main/images/room5.jpg",
+      "1등 2인 양실 2개": "https://raw.githubusercontent.com/너의아이디/레포이름/main/images/room6.jpg"
     };
 
     const guestCountSelect = document.getElementById("guestCount");
@@ -107,42 +107,26 @@
     const totalPriceEl = document.getElementById("totalPrice");
 
     function calculateSpecialRate(roomName, peopleCount) {
-      if (roomName === "1등 2인 양실" && peopleCount === 1) {
-        return 50000;
-      } else if (roomName === "1등 3인 화실" && peopleCount === 2) {
-        return 30000 * 2;
-      } else if (
-        (roomName === "1등 4인 양실" || roomName === "1등 4인 화실") &&
-        peopleCount === 3
-      ) {
-        return 30000 * 3;
-      } else if (roomName === "디럭스 트윈" && peopleCount === 1) {
-        return 120000;
-      } else {
-        const room = allRooms.find(r => r.name === roomName);
-        return room ? room.oneWay * peopleCount : 0;
-      }
+      if (roomName === "1등 2인 양실" && peopleCount === 1) return 50000;
+      if (roomName === "1등 3인 화실" && peopleCount === 2) return 60000;
+      if ((roomName === "1등 4인 양실" || roomName === "1등 4인 화실") && peopleCount === 3) return 90000;
+      if (roomName === "디럭스 트윈" && peopleCount === 1) return 120000;
+      const room = allRooms.find(r => r.name === roomName);
+      return room ? room.oneWay * peopleCount : 0;
     }
 
     function renderUpgradeRooms() {
       const count = parseInt(guestCountSelect.value, 10);
       const priority = upgradePriority[count];
-
       let html = "";
 
       const renderRoom = (roomName, type) => {
         const roomData = allRooms.find(r => r.name === roomName);
-        if (!roomData) return "";
-
-        // 요금 표시 로직
         const displayPricePerPerson = (() => {
           if (roomName === "디럭스 트윈" && count === 1) return 120000;
           if (roomName === "1등 2인 양실" && count === 1) return 50000;
           if (roomName === "1등 3인 화실" && count === 2) return 30000;
-          if (
-            (roomName === "1등 4인 양실" || roomName === "1등 4인 화실") &&
-            count === 3
-          ) return 30000;
+          if ((roomName === "1등 4인 양실" || roomName === "1등 4인 화실") && count === 3) return 30000;
           return roomData.oneWay;
         })();
 
@@ -158,27 +142,20 @@
         `;
       };
 
-      priority.primary.forEach(room => {
-        html += renderRoom(room, 'primary');
-      });
-      priority.secondary.forEach(room => {
-        html += renderRoom(room, 'secondary');
-      });
+      priority.primary.forEach(room => html += renderRoom(room, 'primary'));
+      priority.secondary.forEach(room => html += renderRoom(room, 'secondary'));
 
       upgradeRoomsDiv.innerHTML = html || '<p>추천 객실이 없습니다.</p>';
       totalPriceEl.style.display = 'none';
 
       document.querySelectorAll('input[name="roomSelect"]').forEach(input => {
         input.addEventListener("change", () => {
-          const roomName = input.value;
-          const oneWayTotal = calculateSpecialRate(roomName, count);
-          const roundTripTotal = oneWayTotal * 2;
-
+          const oneWayTotal = calculateSpecialRate(input.value, count);
           totalPriceEl.style.display = 'block';
           totalPriceEl.innerHTML = `
-            <span style="font-weight:bold; font-size: 18px;">총 예상 요금</span><br/>
-            <span style="color:#2c3e50;">▪ 편도:</span> ${oneWayTotal.toLocaleString()}원<br/>
-            <span style="color:#2c3e50;">▪ 왕복:</span> ${roundTripTotal.toLocaleString()}원
+            <strong>총 예상 요금</strong><br/>
+            ▪ 편도: ${oneWayTotal.toLocaleString()}원<br/>
+            ▪ 왕복: ${(oneWayTotal * 2).toLocaleString()}원
           `;
         });
       });
